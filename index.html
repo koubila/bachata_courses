@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BACHATA — L'Art du Mouvement</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+ 
+  :root {
+    --rouge: #C9283E;
+    --rouge-sombre: #8B1A2A;
+    --or: #D4A847;
+    --creme: #F7F0E6;
+    --noir: #0E0A0B;
+    --gris-chaud: #2A2022;
+    --texte-muted: #8A7A7D;
+  }
+ 
+  html { scroll-behavior: smooth; }
+ 
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--noir);
+    color: var(--creme);
+    overflow-x: hidden;
+    cursor: none;
+  }
+ 
+  /* CURSEUR PERSONNALISÉ */
+  .cursor {
+    position: fixed; top: 0; left: 0;
+    width: 12px; height: 12px;
+    background: var(--rouge);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    position: fixed; top: 0; left: 0;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(201,40,62,0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.25s ease, width 0.3s, height 0.3s, border-color 0.3s;
+    transform: translate(-50%, -50%);
+  }
+  body:has(a:hover) .cursor-ring,
+  body:has(button:hover) .cursor-ring {
+    width: 56px; height: 56px;
+    border-color: var(--or);
+  }
+ 
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 24px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: linear-gradient(to bottom, rgba(14,10,11,0.9), transparent);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px; font-weight: 900; letter-spacing: 0.12em;
+    color: var(--creme); text-decoration: none;
+    text-transform: uppercase;
+  }
+  .nav-logo span { color: var(--rouge); }
+  .nav-links { display: flex; gap: 40px; list-style: none; }
+  .nav-links a {
+    font-size: 13px; font-weight: 400; letter-spacing: 0.1em;
+    text-transform: uppercase; color: rgba(247,240,230,0.6);
+    text-decoration: none; transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--creme); }
+  .nav-cta {
+    font-size: 13px; font-weight: 500; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--noir);
+    background: var(--rouge); border: none; padding: 12px 28px;
+    cursor: none; transition: background 0.3s, transform 0.2s;
+  }
+  .nav-cta:hover { background: var(--or); transform: translateY(-1px); }
+ 
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-left {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 140px 64px 80px;
+    position: relative; z-index: 2;
+  }
+  .hero-tag {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--rouge);
+    margin-bottom: 28px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .hero-tag::before {
+    content: ''; display: block;
+    width: 32px; height: 1px; background: var(--rouge);
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(64px, 7vw, 104px);
+    font-weight: 900; line-height: 0.9;
+    margin-bottom: 32px;
+  }
+  .hero-title em {
+    font-style: italic; color: var(--rouge);
+    display: block;
+  }
+  .hero-subtitle {
+    font-size: 16px; line-height: 1.8;
+    color: rgba(247,240,230,0.65);
+    max-width: 420px; margin-bottom: 48px;
+  }
+  .hero-actions { display: flex; align-items: center; gap: 32px; }
+  .btn-primary {
+    font-size: 13px; font-weight: 500; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--noir);
+    background: var(--rouge); border: none; padding: 18px 40px;
+    cursor: none; text-decoration: none;
+    transition: background 0.3s, transform 0.2s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--or); transform: translateY(-2px); }
+  .btn-ghost {
+    font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--creme); text-decoration: none;
+    display: flex; align-items: center; gap: 10px;
+    transition: gap 0.3s;
+  }
+  .btn-ghost:hover { gap: 18px; }
+  .btn-ghost::after {
+    content: '→'; font-size: 16px;
+  }
+ 
+  .hero-right {
+    position: relative; overflow: hidden;
+  }
+  .hero-image-wrap {
+    position: absolute; inset: 0;
+    background: var(--gris-chaud);
+  }
+  .hero-image-wrap::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(105deg, var(--noir) 0%, transparent 40%),
+                linear-gradient(to top, var(--noir) 0%, transparent 30%);
+  }
+ 
+  /* Silhouette SVG danseurs */
+  .dancer-silhouette {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1;
+  }
+  .dancer-silhouette svg { opacity: 0.18; }
+ 
+  /* Cercles décoratifs */
+  .deco-circle {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(201,40,62,0.15);
+  }
+  .deco-circle-1 { width: 500px; height: 500px; top: 10%; right: -100px; }
+  .deco-circle-2 { width: 300px; height: 300px; bottom: 20%; right: 80px; }
+  .deco-circle-3 { width: 150px; height: 150px; top: 35%; right: 200px;
+    border-color: rgba(212,168,71,0.2); }
+ 
+  /* Grand texte décoratif */
+  .hero-bg-text {
+    position: absolute;
+    font-family: 'Playfair Display', serif;
+    font-size: 320px; font-weight: 900; line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(201,40,62,0.06);
+    bottom: -40px; right: -20px;
+    pointer-events: none; z-index: 1;
+    user-select: none;
+  }
+ 
+  .hero-stats {
+    display: flex; gap: 48px; margin-top: 56px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(247,240,230,0.08);
+  }
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px; font-weight: 700; color: var(--rouge);
+    display: block; line-height: 1;
+  }
+  .stat-label {
+    font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--texte-muted); margin-top: 6px; display: block;
+  }
+ 
+  /* BANDE DÉFILANTE */
+  .ticker {
+    background: var(--rouge);
+    padding: 14px 0; overflow: hidden;
+    position: relative;
+  }
+  .ticker-track {
+    display: flex; gap: 0;
+    animation: ticker 20s linear infinite;
+    white-space: nowrap;
+  }
+  .ticker-item {
+    font-size: 12px; font-weight: 500; letter-spacing: 0.2em;
+    text-transform: uppercase; color: rgba(14,10,11,0.85);
+    padding: 0 40px;
+    flex-shrink: 0;
+  }
+  .ticker-sep { color: rgba(14,10,11,0.4); }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+ 
+  /* SECTION : ORIGINES */
+  .section { padding: 120px 48px; }
+  .section-inner { max-width: 1200px; margin: 0 auto; }
+ 
+  .section-label {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--rouge);
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-label::before {
+    content: ''; display: block; width: 24px; height: 1px; background: var(--rouge);
+  }
+ 
+  .origines-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center; margin-top: 16px;
+  }
+  .origines-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(42px, 4vw, 64px);
+    font-weight: 900; line-height: 1.05;
+    margin-bottom: 32px;
+  }
+  .origines-title em { font-style: italic; color: var(--rouge); }
+  .origines-body {
+    font-size: 16px; line-height: 1.85;
+    color: rgba(247,240,230,0.65);
+    margin-bottom: 24px;
+  }
+ 
+  .origines-visual {
+    position: relative;
+  }
+  .map-card {
+    background: var(--gris-chaud);
+    padding: 48px;
+    position: relative; overflow: hidden;
+  }
+  .map-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--rouge), var(--or));
+  }
+  .map-flag {
+    font-size: 64px; margin-bottom: 20px; display: block;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+  }
+  .map-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; font-weight: 700; margin-bottom: 12px;
+  }
+  .map-text {
+    font-size: 14px; line-height: 1.7;
+    color: rgba(247,240,230,0.6);
+  }
+  .map-year {
+    position: absolute; bottom: 24px; right: 32px;
+    font-family: 'Playfair Display', serif;
+    font-size: 80px; font-weight: 900;
+    color: rgba(201,40,62,0.08); line-height: 1;
+    user-select: none;
+  }
+ 
+  /* STYLES */
+  .styles-section {
+    background: var(--gris-chaud);
+    padding: 120px 48px;
+  }
+  .styles-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 2px; margin-top: 64px;
+  }
+  .style-card {
+    background: var(--noir);
+    padding: 48px 36px;
+    position: relative; overflow: hidden;
+    transition: background 0.4s;
+  }
+  .style-card:hover { background: #1A1014; }
+  .style-card::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px; background: var(--rouge);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .style-card:hover::after { transform: scaleX(1); }
+  .style-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 80px; font-weight: 900; line-height: 1;
+    color: rgba(201,40,62,0.1);
+    position: absolute; top: 24px; right: 28px;
+    transition: color 0.4s;
+  }
+  .style-card:hover .style-number { color: rgba(201,40,62,0.2); }
+  .style-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px; font-weight: 700; margin-bottom: 16px;
+    position: relative; z-index: 1;
+  }
+  .style-origin {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--rouge);
+    margin-bottom: 20px; display: block;
+  }
+  .style-desc {
+    font-size: 14px; line-height: 1.75;
+    color: rgba(247,240,230,0.55);
+  }
+ 
+  /* MUSIQUE */
+  .musique-section { padding: 120px 48px; }
+  .musique-grid {
+    display: grid; grid-template-columns: 1fr 1.2fr;
+    gap: 80px; align-items: start; margin-top: 64px;
+  }
+  .track-list { display: flex; flex-direction: column; gap: 0; }
+  .track {
+    display: flex; align-items: center; gap: 24px;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(247,240,230,0.06);
+    cursor: none; transition: padding-left 0.3s;
+  }
+  .track:hover { padding-left: 12px; }
+  .track-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px; color: var(--texte-muted);
+    min-width: 20px;
+  }
+  .track:hover .track-num { color: var(--rouge); }
+  .track-info { flex: 1; }
+  .track-title { font-size: 15px; font-weight: 500; margin-bottom: 3px; }
+  .track-artist { font-size: 13px; color: var(--texte-muted); }
+  .track-genre {
+    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--rouge); background: rgba(201,40,62,0.1);
+    padding: 4px 10px;
+  }
+  .track-duration { font-size: 13px; color: var(--texte-muted); }
+ 
+  .instruments-wrap {
+    position: sticky; top: 120px;
+  }
+  .instruments-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px; font-weight: 700; margin-bottom: 36px;
+  }
+  .instrument-item {
+    display: flex; gap: 20px; align-items: flex-start;
+    margin-bottom: 28px;
+  }
+  .instrument-icon {
+    width: 48px; height: 48px;
+    background: rgba(201,40,62,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .instrument-name { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+  .instrument-role { font-size: 13px; color: var(--texte-muted); line-height: 1.6; }
+ 
+  /* APPRENDRE */
+  .apprendre-section {
+    background: var(--rouge);
+    padding: 100px 48px;
+    position: relative; overflow: hidden;
+  }
+  .apprendre-section::before {
+    content: 'BACHATA';
+    position: absolute;
+    font-family: 'Playfair Display', serif;
+    font-size: 280px; font-weight: 900; line-height: 1;
+    color: rgba(0,0,0,0.08);
+    bottom: -40px; right: -20px;
+    pointer-events: none;
+  }
+  .apprendre-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+    align-items: center; position: relative; z-index: 1;
+  }
+  .apprendre-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(40px, 4vw, 60px);
+    font-weight: 900; color: var(--noir); line-height: 1.1;
+    margin-bottom: 24px;
+  }
+  .apprendre-subtitle {
+    font-size: 16px; color: rgba(14,10,11,0.65);
+    line-height: 1.75; margin-bottom: 40px;
+  }
+  .btn-dark {
+    font-size: 13px; font-weight: 500; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--creme);
+    background: var(--noir); border: none; padding: 18px 40px;
+    cursor: none; text-decoration: none;
+    display: inline-block; transition: opacity 0.3s, transform 0.2s;
+  }
+  .btn-dark:hover { opacity: 0.85; transform: translateY(-2px); }
+ 
+  .niveaux { display: flex; flex-direction: column; gap: 16px; }
+  .niveau-card {
+    background: rgba(14,10,11,0.12);
+    padding: 24px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: background 0.3s;
+  }
+  .niveau-card:hover { background: rgba(14,10,11,0.22); }
+  .niveau-left { display: flex; align-items: center; gap: 20px; }
+  .niveau-badge {
+    width: 40px; height: 40px;
+    background: rgba(14,10,11,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px; font-weight: 700; color: var(--noir);
+  }
+  .niveau-name { font-size: 15px; font-weight: 500; color: var(--noir); }
+  .niveau-desc { font-size: 13px; color: rgba(14,10,11,0.55); margin-top: 2px; }
+  .niveau-duration {
+    font-size: 13px; color: rgba(14,10,11,0.5);
+    display: flex; align-items: center; gap: 6px;
+  }
+ 
+  /* TEMOIGNAGES */
+  .temoignages-section { padding: 120px 48px; }
+  .temoignages-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 24px; margin-top: 64px;
+  }
+  .temoignage-card {
+    background: var(--gris-chaud);
+    padding: 40px 36px;
+    position: relative;
+  }
+  .temoignage-card::before {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 100px; line-height: 0.8;
+    color: rgba(201,40,62,0.15);
+    position: absolute; top: 24px; left: 28px;
+  }
+  .temoignage-text {
+    font-size: 15px; line-height: 1.8;
+    color: rgba(247,240,230,0.75);
+    margin-bottom: 28px; margin-top: 40px;
+    font-style: italic;
+  }
+  .temoignage-author { display: flex; align-items: center; gap: 14px; }
+  .author-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--rouge);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px; font-weight: 700; color: var(--creme);
+    flex-shrink: 0;
+  }
+  .author-name { font-size: 14px; font-weight: 500; }
+  .author-meta { font-size: 12px; color: var(--texte-muted); margin-top: 2px; }
+  .stars { color: var(--or); font-size: 12px; letter-spacing: 2px; margin-bottom: 4px; }
+ 
+  /* FOOTER */
+  footer {
+    background: #070505;
+    padding: 80px 48px 40px;
+    border-top: 1px solid rgba(247,240,230,0.05);
+  }
+  .footer-inner { max-width: 1200px; margin: 0 auto; }
+  .footer-top {
+    display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 60px; margin-bottom: 60px;
+  }
+  .footer-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px; font-weight: 900; letter-spacing: 0.08em;
+    text-transform: uppercase; margin-bottom: 16px;
+  }
+  .footer-brand span { color: var(--rouge); }
+  .footer-tagline { font-size: 14px; color: var(--texte-muted); line-height: 1.7; }
+  .footer-col-title {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--rouge);
+    margin-bottom: 20px;
+  }
+  .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-links a {
+    font-size: 14px; color: rgba(247,240,230,0.5);
+    text-decoration: none; transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--creme); }
+  .footer-bottom {
+    border-top: 1px solid rgba(247,240,230,0.05);
+    padding-top: 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-copy { font-size: 12px; color: var(--texte-muted); }
+  .footer-socials { display: flex; gap: 20px; }
+  .social-link {
+    font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(247,240,230,0.4); text-decoration: none;
+    transition: color 0.3s;
+  }
+  .social-link:hover { color: var(--rouge); }
+ 
+  /* ANIMATIONS */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+ 
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .hero-left { padding: 120px 24px 60px; }
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    .section { padding: 80px 24px; }
+    .origines-grid, .musique-grid, .apprendre-inner, .footer-top { grid-template-columns: 1fr; gap: 40px; }
+    .styles-grid { grid-template-columns: 1fr; }
+    .temoignages-grid { grid-template-columns: 1fr; }
+    .apprendre-section { padding: 80px 24px; }
+    footer { padding: 60px 24px 32px; }
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
+  }
+</style>
+</head>
+<body>
+ 
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+ 
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">BA<span>CH</span>ATA</a>
+  <ul class="nav-links">
+    <li><a href="#origines">Origines</a></li>
+    <li><a href="#styles">Styles</a></li>
+    <li><a href="#musique">Musique</a></li>
+    <li><a href="#apprendre">Apprendre</a></li>
+  </ul>
+  <button class="nav-cta" onclick="document.getElementById('apprendre').scrollIntoView({behavior:'smooth'})">Commencer</button>
+</nav>
+ 
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="hero-tag reveal">Danse Latine · République Dominicaine</p>
+    <h1 class="hero-title reveal reveal-delay-1">
+      L'art de<br>
+      <em>danser</em><br>
+      l'amour
+    </h1>
+    <p class="hero-subtitle reveal reveal-delay-2">
+      La bachata est bien plus qu'une danse — c'est un langage universel de passion, de mélancolie et de connexion humaine née dans les rues de Santo Domingo.
+    </p>
+    <div class="hero-actions reveal reveal-delay-3">
+      <a href="#apprendre" class="btn-primary">Découvrir les cours</a>
+      <a href="#origines" class="btn-ghost">Notre histoire</a>
+    </div>
+    <div class="hero-stats reveal reveal-delay-4">
+      <div>
+        <span class="stat-number">1962</span>
+        <span class="stat-label">Année de naissance</span>
+      </div>
+      <div>
+        <span class="stat-number">180+</span>
+        <span class="stat-label">Pays pratiquants</span>
+      </div>
+      <div>
+        <span class="stat-number">4</span>
+        <span class="stat-label">Styles majeurs</span>
+      </div>
+    </div>
+  </div>
+ 
+  <div class="hero-right">
+    <div class="hero-image-wrap">
+      <!-- Motif abstrait décoratif -->
+      <div class="dancer-silhouette">
+        <svg width="600" height="700" viewBox="0 0 600 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Formes abstraites évoquant les danseurs -->
+          <ellipse cx="200" cy="200" rx="80" ry="120" fill="white" transform="rotate(-15 200 200)"/>
+          <ellipse cx="220" cy="400" rx="70" ry="130" fill="white" transform="rotate(10 220 400)"/>
+          <ellipse cx="380" cy="220" rx="75" ry="110" fill="white" transform="rotate(12 380 220)"/>
+          <ellipse cx="360" cy="420" rx="65" ry="125" fill="white" transform="rotate(-8 360 420)"/>
+          <circle cx="200" cy="130" r="40" fill="white"/>
+          <circle cx="380" cy="150" r="38" fill="white"/>
+          <!-- Bras entrelacés -->
+          <path d="M240 220 Q310 180 360 220" stroke="white" stroke-width="12" fill="none" stroke-linecap="round"/>
+          <path d="M240 260 Q310 300 350 270" stroke="white" stroke-width="8" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="deco-circle deco-circle-1"></div>
+      <div class="deco-circle deco-circle-2"></div>
+      <div class="deco-circle deco-circle-3"></div>
+    </div>
+    <div class="hero-bg-text">B</div>
+  </div>
+</section>
+ 
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track" id="ticker">
+    <span class="ticker-item">Passion <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Sensualité <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">République Dominicaine <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Connexion <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Mélodie <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Mouvement <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Bachata Moderna <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Sensual <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Tradition <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">UNESCO 2019 <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Passion <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Sensualité <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">République Dominicaine <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Connexion <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Mélodie <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Mouvement <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Bachata Moderna <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Sensual <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">Tradition <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">UNESCO 2019 <span class="ticker-sep">✦</span></span>
+  </div>
+</div>
+ 
+<!-- ORIGINES -->
+<section class="section" id="origines">
+  <div class="section-inner">
+    <p class="section-label reveal">Nos racines</p>
+    <div class="origines-grid">
+      <div>
+        <h2 class="origines-title reveal">Une danse née<br>dans la <em>douleur</em><br>et la joie</h2>
+        <p class="origines-body reveal">La bachata trouve ses origines dans les campagnes dominicaines des années 1960. Longtemps considérée comme une musique de basse classe — la « música de amargue » (musique de l'amertume) — elle était interdite à la radio nationale pendant plusieurs décennies.</p>
+        <p class="origines-body reveal">C'est grâce à des artistes comme José Manuel Calderón, Leonard Paniagua et plus tard Juan Luis Guerra que cette danse a gagné ses lettres de noblesse. En 2019, l'UNESCO l'a inscrite au patrimoine culturel immatériel de l'humanité.</p>
+      </div>
+      <div class="origines-visual reveal">
+        <div class="map-card">
+          <span class="map-flag">🇩🇴</span>
+          <h3 class="map-title">République Dominicaine</h3>
+          <p class="map-text">Berceau de la bachata, ce pays caribéen a vu naître cette danse dans les quartiers populaires de Saint-Domingue. La capitale Santo Domingo reste le cœur battant de cette tradition musicale et chorégraphique.</p>
+          <div class="map-year">62</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- STYLES -->
+<section class="styles-section" id="styles">
+  <div class="section-inner">
+    <p class="section-label reveal">Styles & Évolution</p>
+    <h2 class="origines-title reveal" style="font-family:'Playfair Display',serif;font-size:clamp(42px,4vw,64px);font-weight:900;">Quatre façons de<br><em>raconter</em> la même histoire</h2>
+    <div class="styles-grid">
+      <div class="style-card reveal">
+        <div class="style-number">01</div>
+        <span class="style-origin">Originale · 1960s</span>
+        <h3 class="style-name">Bachata Dominicana</h3>
+        <p class="style-desc">La forme traditionnelle, dansée avec les pieds proches du sol et un mouvement de hanche authentique. Les pas simples cachent une profonde expressivité émotionnelle héritée du bolero.</p>
+      </div>
+      <div class="style-card reveal reveal-delay-1">
+        <div class="style-number">02</div>
+        <span class="style-origin">Moderne · 2000s</span>
+        <h3 class="style-name">Bachata Moderna</h3>
+        <p class="style-desc">Née en Espagne, cette évolution intègre des éléments de salsa et de tango argentin. Rotations élaborées, figures acrobatiques et une connexion corporelle plus prononcée avec le partenaire.</p>
+      </div>
+      <div class="style-card reveal reveal-delay-2">
+        <div class="style-number">03</div>
+        <span class="style-origin">Sensuel · 2010s</span>
+        <h3 class="style-name">Bachata Sensual</h3>
+        <p class="style-desc">Créée par Korke et Judith à Séville, cette forme sublime les ondulations du corps et les vagues corporelles. Elle privilégie la connexion profonde et le dialogue entre danseurs.</p>
+      </div>
+      <div class="style-card reveal">
+        <div class="style-number">04</div>
+        <span class="style-origin">Fusion · 2015s</span>
+        <h3 class="style-name">Bachata Fusion</h3>
+        <p class="style-desc">Un mélange audacieux incorporant hip-hop, contemporary et kizomba. Dansée sur des musiques pop et R&B remixées en bachata, elle séduit une nouvelle génération de danseurs.</p>
+      </div>
+      <div class="style-card reveal reveal-delay-1" style="grid-column: span 2;">
+        <div class="style-number">⋆</div>
+        <span class="style-origin">Patrimoine · UNESCO 2019</span>
+        <h3 class="style-name">Reconnaissance Mondiale</h3>
+        <p class="style-desc">En novembre 2019, la bachata dominicaine a été inscrite sur la liste représentative du patrimoine culturel immatériel de l'humanité par l'UNESCO — une consécration internationale pour cette danse qui a voyagé du peuple dominicain vers les cinq continents.</p>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- MUSIQUE -->
+<section class="musique-section" id="musique">
+  <div class="section-inner">
+    <p class="section-label reveal">La bande-son</p>
+    <h2 class="origines-title reveal" style="font-family:'Playfair Display',serif;font-size:clamp(42px,4vw,64px);font-weight:900;">Les voix qui font<br><em>vibrer</em> les corps</h2>
+    <div class="musique-grid">
+      <div>
+        <div class="track-list">
+          <div class="track reveal">
+            <span class="track-num">01</span>
+            <div class="track-info">
+              <div class="track-title">Bachata en Fukuoka</div>
+              <div class="track-artist">Juan Luis Guerra</div>
+            </div>
+            <span class="track-genre">Classique</span>
+            <span class="track-duration">4:12</span>
+          </div>
+          <div class="track reveal reveal-delay-1">
+            <span class="track-num">02</span>
+            <div class="track-info">
+              <div class="track-title">Obsesión</div>
+              <div class="track-artist">Aventura</div>
+            </div>
+            <span class="track-genre">Moderna</span>
+            <span class="track-duration">3:58</span>
+          </div>
+          <div class="track reveal reveal-delay-2">
+            <span class="track-num">03</span>
+            <div class="track-info">
+              <div class="track-title">Loco</div>
+              <div class="track-artist">Enrique Iglesias & Romeo Santos</div>
+            </div>
+            <span class="track-genre">Fusion</span>
+            <span class="track-duration">3:45</span>
+          </div>
+          <div class="track reveal">
+            <span class="track-num">04</span>
+            <div class="track-info">
+              <div class="track-title">Propuesta Indecente</div>
+              <div class="track-artist">Romeo Santos</div>
+            </div>
+            <span class="track-genre">Moderna</span>
+            <span class="track-duration">4:22</span>
+          </div>
+          <div class="track reveal reveal-delay-1">
+            <span class="track-num">05</span>
+            <div class="track-info">
+              <div class="track-title">Burbujas de Amor</div>
+              <div class="track-artist">Juan Luis Guerra</div>
+            </div>
+            <span class="track-genre">Classique</span>
+            <span class="track-duration">3:35</span>
+          </div>
+          <div class="track reveal reveal-delay-2">
+            <span class="track-num">06</span>
+            <div class="track-info">
+              <div class="track-title">Me Niego</div>
+              <div class="track-artist">Reik, Ozuna & Wisin</div>
+            </div>
+            <span class="track-genre">Fusion</span>
+            <span class="track-duration">3:52</span>
+          </div>
+        </div>
+      </div>
+      <div class="instruments-wrap reveal">
+        <h3 class="instruments-title">Les instruments qui définissent le son</h3>
+        <div class="instrument-item">
+          <div class="instrument-icon">🎸</div>
+          <div>
+            <div class="instrument-name">Guitare acoustique</div>
+            <div class="instrument-role">L'âme de la bachata. Joue la melodía, la segunda et le requinto — trois rôles distincts qui tissent ensemble la texture harmonique unique de ce genre.</div>
+          </div>
+        </div>
+        <div class="instrument-item">
+          <div class="instrument-icon">🥁</div>
+          <div>
+            <div class="instrument-name">Bongo & Güira</div>
+            <div class="instrument-role">Le bongo cubain et la güira dominicaine (grattoir métallique) forment le cœur rythmique. Ensemble, ils créent le groove syncopé qui invite irrésistiblement à danser.</div>
+          </div>
+        </div>
+        <div class="instrument-item">
+          <div class="instrument-icon">🎶</div>
+          <div>
+            <div class="instrument-name">Maracas & Basse</div>
+            <div class="instrument-role">Les maracas ajoutent une couche percussive légère tandis que la basse électrique souligne la pulsation fondamentale en 4/4 qui structure chaque phrase musicale.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- APPRENDRE -->
+<section class="apprendre-section" id="apprendre">
+  <div class="apprendre-inner">
+    <div>
+      <h2 class="apprendre-title">Commencez votre voyage dans la bachata</h2>
+      <p class="apprendre-subtitle">Quel que soit votre niveau, nos cours vous guident à travers chaque étape de cet art. Rejoignez une communauté passionnée qui danse ensemble dans le monde entier.</p>
+      <a href="#" class="btn-dark">Voir tous les cours</a>
+    </div>
+    <div class="niveaux">
+      <div class="niveau-card reveal">
+        <div class="niveau-left">
+          <div class="niveau-badge">01</div>
+          <div>
+            <div class="niveau-name">Débutant absolu</div>
+            <div class="niveau-desc">Pas de base, rythme, structure corporelle</div>
+          </div>
+        </div>
+        <div class="niveau-duration">⏱ 4 semaines</div>
+      </div>
+      <div class="niveau-card reveal reveal-delay-1">
+        <div class="niveau-left">
+          <div class="niveau-badge">02</div>
+          <div>
+            <div class="niveau-name">Initié</div>
+            <div class="niveau-desc">Figures de base, connexion avec le partenaire</div>
+          </div>
+        </div>
+        <div class="niveau-duration">⏱ 6 semaines</div>
+      </div>
+      <div class="niveau-card reveal reveal-delay-2">
+        <div class="niveau-left">
+          <div class="niveau-badge">03</div>
+          <div>
+            <div class="niveau-name">Intermédiaire</div>
+            <div class="niveau-desc">Rotations, ondulations, styling avancé</div>
+          </div>
+        </div>
+        <div class="niveau-duration">⏱ 8 semaines</div>
+      </div>
+      <div class="niveau-card reveal reveal-delay-3">
+        <div class="niveau-left">
+          <div class="niveau-badge">04</div>
+          <div>
+            <div class="niveau-name">Avancé</div>
+            <div class="niveau-desc">Improvisation, dips, séquences chorégraphiées</div>
+          </div>
+        </div>
+        <div class="niveau-duration">⏱ 10 semaines</div>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- TEMOIGNAGES -->
+<section class="temoignages-section">
+  <div class="section-inner">
+    <p class="section-label reveal">Ils ont dansé avec nous</p>
+    <h2 class="origines-title reveal" style="font-family:'Playfair Display',serif;font-size:clamp(36px,4vw,56px);font-weight:900;">Ce qu'ils en <em>disent</em></h2>
+    <div class="temoignages-grid">
+      <div class="temoignage-card reveal">
+        <div class="stars">★★★★★</div>
+        <p class="temoignage-text">La bachata a complètement transformé ma façon de me connecter aux autres. En trois mois, j'étais capable de danser dans des soirées parisiennes. Une expérience qui change la vie.</p>
+        <div class="temoignage-author">
+          <div class="author-avatar">SM</div>
+          <div>
+            <div class="author-name">Sophie Martin</div>
+            <div class="author-meta">Étudiante · Paris, France</div>
+          </div>
+        </div>
+      </div>
+      <div class="temoignage-card reveal reveal-delay-1">
+        <div class="stars">★★★★★</div>
+        <p class="temoignage-text">Je n'avais jamais dansé de ma vie. La pédagogie progressive m'a permis de progresser rapidement. La communauté est incroyable — bienveillante et passionnée.</p>
+        <div class="temoignage-author">
+          <div class="author-avatar">TR</div>
+          <div>
+            <div class="author-name">Thomas Remy</div>
+            <div class="author-meta">Ingénieur · Lyon, France</div>
+          </div>
+        </div>
+      </div>
+      <div class="temoignage-card reveal reveal-delay-2">
+        <div class="stars">★★★★★</div>
+        <p class="temoignage-text">La bachata sensual m'a ouvert un monde de musicalité que je n'imaginais pas. Chaque cours est une exploration de soi autant qu'une technique de danse.</p>
+        <div class="temoignage-author">
+          <div class="author-avatar">AC</div>
+          <div>
+            <div class="author-name">Ana Cardoso</div>
+            <div class="author-meta">Danseuse · Bruxelles, Belgique</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand">BA<span>CH</span>ATA</div>
+        <p class="footer-tagline">L'art de danser l'amour, né en République Dominicaine, pratiqué dans le monde entier. Une tradition vivante, une communauté mondiale.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Explorer</div>
+        <ul class="footer-links">
+          <li><a href="#">Origines & Histoire</a></li>
+          <li><a href="#">Les 4 styles</a></li>
+          <li><a href="#">La musique</a></li>
+          <li><a href="#">UNESCO & Patrimoine</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Apprendre</div>
+        <ul class="footer-links">
+          <li><a href="#">Cours débutant</a></li>
+          <li><a href="#">Cours intermédiaire</a></li>
+          <li><a href="#">Workshops sensual</a></li>
+          <li><a href="#">Stages intensifs</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Trouver</div>
+        <ul class="footer-links">
+          <li><a href="#">Soirées bachata Paris</a></li>
+          <li><a href="#">Studios partenaires</a></li>
+          <li><a href="#">Festivals en Europe</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2024 Bachata · Patrimoine culturel immatériel de l'UNESCO · Tous droits réservés</p>
+      <div class="footer-socials">
+        <a href="#" class="social-link">Instagram</a>
+        <a href="#" class="social-link">TikTok</a>
+        <a href="#" class="social-link">YouTube</a>
+        <a href="#" class="social-link">Spotify</a>
+      </div>
+    </div>
+  </div>
+</footer>
+ 
+<script>
+  // Curseur personnalisé
+  const cursor = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursor-ring');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    cursorRing.style.left = e.clientX + 'px';
+    cursorRing.style.top = e.clientY + 'px';
+  });
+ 
+  // Animations au scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+ 
+  reveals.forEach(el => observer.observe(el));
+ 
+  // Animation hero immédiate
+  setTimeout(() => {
+    document.querySelectorAll('.hero .reveal').forEach(el => el.classList.add('visible'));
+  }, 200);
+</script>
+</body>
+</html>
